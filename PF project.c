@@ -8,6 +8,10 @@
 #define QUESTION_LENGTH 256
 #define OPTION_LENGTH 50
 #define NAME_LENGTH 200
+#define PF_FILE "PFquestions.txt"
+#define AP_FILE "APquestions.txt"
+#define CAL_FILE "CALquestions.txt"
+#define HIGHEST_SCORE_FILE "highestscore.txt"
 #define ALL_SCORES_FILE "scoreboard.txt"
 
 typedef struct 
@@ -25,6 +29,12 @@ typedef struct
 
 } Scoreboard;
 
+void LoadQuestionsFromFile(QuizQuestion quiz[], const char *FileName);
+void WritePFQuestionsToFile();
+void WriteAPQuestionsToFile();
+void WriteCALQuestionsToFile();
+int GetHighestScore();
+void UpdateHighestScore(int new_highest_score); 
 void DisplayCurrentQs(QuizQuestion current_qs);
 int CheckAnswers(QuizQuestion quiz[], int order_of_questions[], char user_ans[], int total_score);
 void PlayQuiz(QuizQuestion quiz[], int num_of_qs, const char *name);
@@ -39,7 +49,39 @@ int main() {
 
     int choice, option, num_of_qs = MAX_QUESTIONS, attempted_rounds = 0;
     char name[NAME_LENGTH]; 
+
+    FILE *fptr;
     
+    if ((fptr = fopen(PF_FILE, "r")) == NULL) 
+    {
+        WritePFQuestionsToFile();
+    } 
+    
+    else 
+    {
+        fclose(fptr);
+    }
+    
+    if ((fptr = fopen(AP_FILE, "r")) == NULL) 
+    {
+        WriteAPQuestionsToFile();
+    } 
+    
+    else 
+    {
+        fclose(fptr);
+    }
+
+    if ((fptr = fopen(CAL_FILE, "r")) == NULL) 
+    {
+        WriteCALQuestionsToFile();
+    } 
+    
+    else 
+    {
+        fclose(fptr);
+    }
+
     srand(time(NULL));  
     
     printf("\n\t\t\t\t\t\033[38;5;44mWELCOME TO THE QUIZ GAME!!\033[0m");
@@ -61,7 +103,7 @@ int main() {
         printf("\033[38;2;231;111;81m4. Exit the Program!!\033[0m\n"); 
         printf("\033[38;2;106;5;114m___________________________________\033[0m\n\n");
 
-        printf("Enter your choice (1-4): ");
+        printf("Enter your choice (1-3): ");
         scanf("%d", &option);
         
 
@@ -81,7 +123,24 @@ int main() {
 
             switch (choice) 
             {
-     
+                case 1:
+                LoadQuestionsFromFile(quiz, PF_FILE);
+                printf("\nYou selected Programming Fundamentals!\n\n");
+                break;                   
+                
+                case 2:
+                LoadQuestionsFromFile(quiz, AP_FILE);
+                printf("\nYou selected Applied Physics.\n\n");
+                break;
+        
+                case 3:
+                LoadQuestionsFromFile(quiz, CAL_FILE);
+                printf("\nYou selected Calculus.\n\n");
+                break;
+            
+                default:
+                printf("\nInvalid subject choice!! Returning to menu...\n\n");
+                continue; 
             }
                 attempted_rounds++;
 
@@ -122,7 +181,6 @@ int main() {
     
     return 0;
 }
-
 
 void DisplayCurrentQs(QuizQuestion current_qs)
 {
