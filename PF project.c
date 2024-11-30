@@ -182,6 +182,137 @@ int main() {
     return 0;
 }
 
+void WritePFQuestionsToFile() 
+{
+    FILE *fptr = fopen(PF_FILE, "w");
+    
+    if (!fptr) 
+    {
+        printf("Error opening file for writing: %s. Exiting the program....\n", PF_FILE);
+        exit(1);
+    }
+
+    fprintf(fptr, "Which of the following is used to declare a variable in C?\n");
+    fprintf(fptr, "var\nint\nlet\nstring\n");
+    fprintf(fptr, "b\n");
+
+    fprintf(fptr, "Which of the following is the correct syntax for a for loop in C?\n");
+    fprintf(fptr, "for (int i = 0; i < 10; i++)\nfor i = 0; i < 10; i++\nfor (i = 0; i < 10; i++)\nfor (int i; i < 10; i++)\n");
+    fprintf(fptr, "a\n");
+
+    fprintf(fptr, "What is the correct way to declare a pointer in C?\n");
+    fprintf(fptr, "int ptr;\nptr int;\nint* ptr;\nptr* int;\n");
+    fprintf(fptr, "c\n");
+
+    fprintf(fptr, "What does the following code do? 'printf(\"Hello World!\");'\n");
+    fprintf(fptr, "Prints 'Hello World!'\nDefines a function 'Hello World!'\nDeclares a variable\nLoops through the array\n");
+    fprintf(fptr, "a\n");
+
+    fprintf(fptr, "Which keyword is used to define a constant in C?\n");
+    fprintf(fptr, "const\ndefine\nstatic\nfinal\n");
+    fprintf(fptr, "a\n");
+
+    fclose(fptr);
+}
+
+void WriteAPQuestionsToFile() 
+{
+    FILE *fptr = fopen(AP_FILE, "w");
+    
+    if (!fptr) 
+    {
+        printf("Error opening file for writing: %s\n", AP_FILE);
+        exit(1);
+    }
+
+    fprintf(fptr, "What is the SI unit of force?\n");
+    fprintf(fptr, "Joule\nNewton\nPascal\nWatt\n");
+    fprintf(fptr, "b\n");
+
+    fprintf(fptr, "What is the acceleration due to gravity on Earth?\n");
+    fprintf(fptr, "8.9 m/s^2\n9.8 m/s^2\n10 m/s^2\n11 m/s^2\n");
+    fprintf(fptr, "b\n");
+
+    fprintf(fptr, "What is the formula for kinetic energy?\n");
+    fprintf(fptr, "mv\nmv^2\nmgh\nFd\n");
+    fprintf(fptr, "b\n");
+
+    fprintf(fptr, "What does Ohms Law state?\n");
+    fprintf(fptr, "V = IR\nV = I/R\nR = IV\nI = VR\n");
+    fprintf(fptr, "a\n");
+
+    fprintf(fptr, "What is the speed of light in vacuum?\n");
+    fprintf(fptr, "3 x 10^8 m/s\n3 x 10^6 m/s\n2 x 10^8 m/s\n3 x 10^5 m/s\n");
+    fprintf(fptr, "a\n");
+
+    fclose(fptr);
+}
+
+void WriteCALQuestionsToFile() 
+{
+    FILE *fptr = fopen(CAL_FILE, "w");
+    
+    if (fptr == NULL) 
+    {
+        printf("Error!! File cannot be opened for writing: %s\n", CAL_FILE);
+        exit(1);
+    }
+
+    fprintf(fptr, "What is the derivative of x^2?\n");
+    fprintf(fptr, "x\n2x\n2\nx^2\n");
+    fprintf(fptr, "b\n");
+
+    fprintf(fptr, "What is the integral of 1/x dx?\n");
+    fprintf(fptr, "x^2\nln(x)\ne^x\n1/x^2\n");
+    fprintf(fptr, "b\n");
+
+    fprintf(fptr, "What is the derivative of sin(x)?\n");
+    fprintf(fptr, "cos(x)\n-cos(x)\nsin(x)\n-sin(x)\n");
+    fprintf(fptr, "a\n");
+
+    fprintf(fptr, "What is the integral of e^x dx?\n");
+    fprintf(fptr, "x\ne^x\nln(x)\n1/x\n");
+    fprintf(fptr, "b\n");
+
+    fprintf(fptr, "What is the derivative of tan(x)?\n");
+    fprintf(fptr, "sec^2(x)\ncsc^2(x)\nsec(x)\ntan(x)\n");
+    fprintf(fptr, "a\n");
+
+    fclose(fptr);
+}
+
+void LoadQuestionsFromFile(QuizQuestion quiz[], const char *FileName) 
+{
+    FILE *fptr = fopen(FileName, "r");
+    
+    if (!fptr) 
+    {
+        printf("Error opening file: %s\n", FileName);
+        exit(1);
+    }
+    
+    for ( int i = 0; i < MAX_QUESTIONS; i++)
+    {
+        fgets(quiz[i].question, QUESTION_LENGTH, fptr); 
+        quiz[i].question[strcspn(quiz[i].question, "\n")] = '\0';
+
+        for (int j = 0; j < 4; j++) 
+        {
+            fgets(quiz[i].options[j], OPTION_LENGTH, fptr);
+            quiz[i].options[j][strcspn(quiz[i].options[j], "\n")] = '\0';
+        }
+
+        char temp_array[10];
+        fgets(temp_array, sizeof(temp_array), fptr);
+        quiz[i].correct_answer = temp_array[0];
+        
+    }
+
+    fclose(fptr);
+
+    return;
+}
+
 void DisplayCurrentQs(QuizQuestion current_qs)
 {
     printf("%s\n", current_qs.question);
