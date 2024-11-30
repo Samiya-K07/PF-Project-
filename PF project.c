@@ -456,3 +456,73 @@ void AllScores(const char *name, int total_score)
     fclose(fptr);
 
 }
+int GetHighestScore()
+{
+    FILE *fptr = fopen(HIGHEST_SCORE_FILE, "r"); 
+    int highest_score = 0;
+
+    if (fptr != NULL)
+    {
+        fscanf(fptr, "%d", &highest_score);
+        fclose(fptr);
+    }
+
+    return highest_score; 
+    
+}
+
+void UpdateHighestScore(int new_highest_score)
+{
+    FILE *fptr = fopen(HIGHEST_SCORE_FILE, "w");
+
+    if (fptr != NULL)
+    {
+        fprintf(fptr, "%d", new_highest_score);
+        fclose(fptr); 
+    }
+    
+}
+
+int GetScores(Scoreboard player_data[])
+{
+    FILE *fptr = fopen(ALL_SCORES_FILE, "r"); 
+
+    if (fptr == NULL)
+    {   
+        printf("\nNo scores found!! Play a game to create the scorebaord!!\n\n");
+        return 0;
+    }
+
+    int total_players = 0; 
+    while (fscanf(fptr, "%d\n", &player_data[total_players].individual_score) == 1)
+    {
+        fgets(player_data[total_players].user_name, NAME_LENGTH, fptr);
+        player_data[total_players].user_name[strcspn(player_data[total_players].user_name, "\n")] = '\0';
+        total_players++;
+    }
+    
+    fclose(fptr); 
+    return total_players;  
+}
+
+void DisplayScores()
+{
+    Scoreboard player_data[MAX_PLAYERS];
+    int total_players = GetScores(player_data); 
+
+    if (total_players == 0)
+    {
+        return; 
+    }
+
+    printf("\nName\t\t\tScore\n");
+    printf("\033[38;2;106;5;114m-----------------------------------------------------------------------------\033[0m\n");
+
+    for (int i = 0; i < total_players; i++) 
+    {
+        printf("%s\t\t%d\n", player_data[i].user_name, player_data[i].individual_score);
+    }
+
+    printf("\033[38;2;106;5;114m------------------------------------------------------------------------------\033[0m\n");
+    printf("Total Number of Players that played the game: %d\n\n", total_players);
+}
